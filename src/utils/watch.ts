@@ -39,7 +39,7 @@ export class Observer {
     }
 
     formatDate(today: Date): void {
-        this.hour = today.getHours() + ":" + today.getMinutes();
+        this.hour = this.rezero(today.getHours()) + ":" + this.rezero(today.getMinutes());
         this.seconds = today.getSeconds().toString();
     }
 
@@ -49,5 +49,9 @@ export class Observer {
 
     getSeconds(): string {
         return this.seconds;
+    }
+
+    rezero(num: number) {
+        return num >= 10 ? num : '0' + num
     }
 }

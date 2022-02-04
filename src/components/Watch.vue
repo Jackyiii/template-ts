@@ -2,7 +2,7 @@
     <div class="circle">
         <div class="dial" :class="showShining ? 'light': ''" @onclick="handleClick">
             {{observer.hour}}
-            <span style="font-size: 12px">{{seconds}}</span>
+            <span style="font-size: 12px">{{rezero(seconds)}}</span>
         </div>
     </div>
 
@@ -15,8 +15,7 @@
 <script lang="ts">
 import { Vue } from 'vue-class-component'
 import { Subject, Observer } from '../utils/watch'
-export default class HelloWorld extends Vue {
-
+export default class Watch extends Vue {
     subject: Subject = new Subject(new Date())
     clickState = 0
     observer: Observer = new Observer()
@@ -26,22 +25,23 @@ export default class HelloWorld extends Vue {
 
     mounted(): void {
         this.subject.addObserver(this.observer)
-        setTimeout(() => {
+        setInterval(() => {
             this.seconds++
+            if (this.seconds == 60) {
+                this.subject.addMinute()
+                this.seconds = 0
+            }
         }, 1000)
     }
 
     handleClick(): void {
-        if (this.increase) {
-            this.increase = false
-            this.clickState = 0
-        }
         this.clickState++
     }
 
     handleIncrease(): void {
         this.increase = true
-        switch (this.clickState) {
+        let value = this.clickState % 3
+        switch (value) {
             case 1:
                 this.subject.addHour()
                 break
@@ -57,6 +57,10 @@ export default class HelloWorld extends Vue {
 
     shining() {
         this.showShining = !this.showShining
+    }
+
+    rezero(num: number) {
+        return num >= 10 ? num : '0' + num
     }
 }
 </script>
